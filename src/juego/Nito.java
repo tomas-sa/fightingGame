@@ -12,6 +12,13 @@ public class Nito {
 	Image nito;
 	Image nito2;
 	Image nitoAtacando;
+	Image nitoAtacando2;
+	Image nitoShield;
+	Image nitoShield2;
+	Image nitoHit;
+	Image nitoHit2;
+	Image nitoCaminando;
+	Image nitoCaminando2;
 	Entorno e;
 	
 	public Nito(double x, double y, Entorno e) {
@@ -21,17 +28,48 @@ public class Nito {
 		this.nito = Herramientas.cargarImagen("demon-idle.gif");
 		this.nito2 = Herramientas.cargarImagen("demon-idle2.gif");
 		this.nitoAtacando = Herramientas.cargarImagen("demon-attack.gif");
+		this.nitoAtacando2 = Herramientas.cargarImagen("demon-attack2.gif");
+		this.nitoShield = Herramientas.cargarImagen("shield.gif");
+		this.nitoShield2 = Herramientas.cargarImagen("shield2.gif");
+		this.nitoHit = Herramientas.cargarImagen("demonHit.gif");
+		this.nitoHit2 = Herramientas.cargarImagen("demonHit2.gif");
+		this.nitoCaminando = Herramientas.cargarImagen("demon-walk.gif");
+		this.nitoCaminando2 = Herramientas.cargarImagen("demon-walk2.gif");
 		this.e = e;
 	}
 	
-	public void dibujar(Entorno entorno, boolean direccion, boolean atacando) {
-		if(atacando) {
-			entorno.dibujarImagen(nitoAtacando, x, y, 0, 1.5);
+	public void dibujar(Entorno entorno, boolean direccion, boolean atacando, boolean cubriendo, boolean hit, boolean caminando) {
+		if(cubriendo) {
+			if(direccion) {
+				entorno.dibujarImagen(nitoShield, x, (y +20), 0, 2.5);
+			}else {
+				entorno.dibujarImagen(nitoShield2, x, (y +20), 0, 2.5);
+			}
+		}else if(hit) {
+			if(direccion) {
+				entorno.dibujarImagen(nitoHit, x, y, 0, 2.5);
+			}else{
+				entorno.dibujarImagen(nitoHit2, x, y, 0, 2.5);
+			}
+			
+		}else if(atacando) {
+			if(direccion) {
+				entorno.dibujarImagen(nitoAtacando, x, y, 0, 2.5);
+			}else {
+				entorno.dibujarImagen(nitoAtacando2, x, y, 0, 2.5);
+			}
+			
+		}else if(caminando) {
+			if(direccion) {
+				entorno.dibujarImagen(nitoCaminando, x, y, 0, 2.5);
+			}else {
+				entorno.dibujarImagen(nitoCaminando2, x, y, 0, 2.5);
+			}
 		}else {
 			if(direccion) {
-				entorno.dibujarImagen(nito, x, y, 0, 1.5);
+				entorno.dibujarImagen(nito, x, y, 0, 2.5);
 			}else {
-				entorno.dibujarImagen(nito2, x, y, 0, 1.5);
+				entorno.dibujarImagen(nito2, x, y, 0, 2.5);
 			}
 		}
 	}

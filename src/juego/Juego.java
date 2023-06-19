@@ -39,9 +39,13 @@ public class Juego extends InterfaceJuego {
 	boolean mirandoAdelante;
 	boolean nitoAdelante;
 	boolean enemigoCubriendo;
+	boolean enemigoHit;
+	boolean golpe;
+	boolean caminando;
 	double gravedad = 15;
 	
 	Timer timer = new Timer();
+	
 	
 
 	// Variables y métodos propios de cada grupo
@@ -61,7 +65,7 @@ public class Juego extends InterfaceJuego {
 		staminaJugador = 300;
 		staminaNito = 300;
 		knight = new Knight(100, 400, entorno);
-		nito = new Nito(1000, 400, entorno);
+		nito = new Nito(600, 450, entorno);
 		bar = new Bar(600,550, entorno, vidaNito);
 		column = new Column(250, 420, entorno);
 		
@@ -72,6 +76,7 @@ public class Juego extends InterfaceJuego {
 		mirandoAdelante = true;
 		nitoAdelante = true;
 		enemigoCubriendo = false;
+		golpe = true;
 		
 
 		// Inicia el juego!
@@ -228,56 +233,12 @@ public class Juego extends InterfaceJuego {
 			//nito.mover();
 			//nito.cambiarAngulo(knight.x, knight.y);
 			
-			
-			
-			
-			
-			
-			
-			//for(int i=0; i < shot.length; i++) {
-			//	if(shot[i] != null) {
-			//		shot[i].dibujar(entorno);
-			//		shot[i].movimiento();
-			//		if(!shot[i].estarEnEntorno()) {
-			//			shot[i] = null;
-			//		}
-			//		if (shot[i] != null) {
-			//			shot[i] = new Shot(shot[i].x, shot[i].y, entorno);
-			//		}
-			//	}
-			//}
-			
-			//movimiento Nito
-			
-			 //if (enemigoSubiendo) {
-			 //       if (nito.y >= 120) {
-			 //           nito.moverArriba();
-			 //       } else {
-			 //           enemigoSubiendo = false;
-			 //           enemigoBajando = true;
-			 //       }
-			 //   } else if (enemigoBajando) {
-			 //   	nito.moverAbajo();
-			 //       if (nito.y >= 350) {
-			 //           enemigoBajando = false;
-			 //           enemigoSubiendo = true;
-			 //       }
-			 //  }
-			
-			
-			 
-			 
-			 
-			//else if(enemigoArriba) {
-			//	if(nito.estarEnEntorno()) {
-			//		nito.moverAbajo();
-			//	}else {
-			//		enemigoAbajo = true;
-			//		enemigoArriba = false;
-			//	}
-				
-			//}
-			
+			if(knight.x > nito.x) {
+				nitoAdelante = false;
+			}else {
+				nitoAdelante = true;
+			}
+						
 			//CONTROL DE STAMINA JUGADOR
 			
 			if(staminaJugador < 300 && !entorno.estaPresionada(entorno.TECLA_CTRL)) {
@@ -285,14 +246,17 @@ public class Juego extends InterfaceJuego {
 			}
 			
 			//INTELIGENCIA ENEMIGO
-			//nito.mover();
+			
+			
+			
 			nito.cambiarAngulo(knight.x, knight.y);
 			
 			//if(knight.x >= nito.x -50 && knight.x <= nito.x +50 ) {
 			//	vidaJugador --;
 			//}
 			
-			if(nito.x >= knight.x -100 && nito.x <= knight.x +100 ) {
+			if(nito.x >= knight.x -160 && nito.x <= knight.x +160 ) {
+				caminando = false;
 				
 				if((nito.y <= knight.y && nito.y >= knight.y - 50) || (nito.y >= knight.y && nito.y <= knight.y + 80)) {
 					
@@ -306,9 +270,29 @@ public class Juego extends InterfaceJuego {
 			        timer.schedule(taskNito, 2000);
 					
 					if((!(this.vidaJugador <= 1) && !entorno.estaPresionada(entorno.TECLA_CTRL)) || staminaJugador < 50) {
-						if(!enemigoCubriendo) {
-							this.vidaJugador -=2;
+						if(!enemigoCubriendo && !enemigoHit) {
+							
+							vidaJugador -=1;
+							
 						}
+							//if(golpe) {
+							//	TimerTask taskGolpe = new TimerTask() {
+							//		int count = 0;
+							//           @Override
+							//           public void run() {
+							//        	   if(count < 5) {
+							//        		   vidaJugador -=20;
+							//        		   count ++;
+							//        	   }else {
+							//        		   timer.cancel();
+							//        		   golpe = true;
+							//        	   }
+							//            }
+							//        };
+							//        startTimer(timer, taskGolpe);
+							//        golpe = false;
+							//}
+						//}
 						
 						
 					} else if(!(this.vidaJugador <= 1) && entorno.estaPresionada(entorno.TECLA_CTRL)) {
@@ -331,31 +315,48 @@ public class Juego extends InterfaceJuego {
 						        timer.schedule(task, 2000);
 						}
 						if(!enemigoCubriendo || staminaNito <=10) {
+							//para lograr animacion de golpe enemigo
+							enemigoHit = true;
 							vidaNito -= 20;
+							TimerTask task = new TimerTask() {
+					            @Override
+					            public void run() {
+					                enemigoHit = false;
+					            }
+					        };
+					        timer.schedule(task, 400);
+							
+						}else if(enemigoCubriendo) {
+							if(staminaNito >= 0) {
+								staminaNito-=20;
+							}
+							
 						}
+					}else {
 						
+						if(staminaNito < 300 && enemigoCubriendo == false) {
+							staminaNito +=1;
+						}
 					}
 					
 				}
+				//REVISAR ESTE ELSE YA QUE PUEDE QUE ESTA LINEA SEA INNECESARIA
+				//linea que asegura que enemigo deje de cubrirse cuando jugador se aleja
 			}else {
+				caminando = true;
+				nito.mover();
 				enemigoCubriendo = false;
-			}
-			if(enemigoCubriendo) {
-				if(staminaNito >= 0) {
-					staminaNito-=2;
-				}
-				
-			}else {
 				if(staminaNito < 300) {
 					staminaNito +=1;
 				}
 			}
 			
 			
+			
 			//INICIANDO OBJETOS
 			
 			knight.dibujar(entorno, mirandoAdelante);
-			nito.dibujar(entorno, nitoAdelante, nitoAtacando);
+			nito.dibujar(entorno, nitoAdelante, nitoAtacando, enemigoCubriendo, enemigoHit, caminando);
 			//bar.dibujar(entorno);
 			column.dibujar(entorno);
 			vida.dibujarse(entorno, 1);
