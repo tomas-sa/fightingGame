@@ -16,16 +16,16 @@ public class Shot {
 	public Shot(double x, double y, Entorno e) {
 		this.x = x;
 		this.y = y;
-		this.shot = Herramientas.cargarImagen("shot.png");
+		this.shot = Herramientas.cargarImagen("horse.gif");
 		this.shot2 = Herramientas.cargarImagen("shot2.png");
 		this.e = e;
 	}
 	
 	public void dibujar(Entorno entorno, boolean direccion) {
 		if(direccion) {
-			entorno.dibujarImagen(shot, x, y, this.angulo, 0.4);
+			entorno.dibujarImagen(shot, x, y, this.angulo, 3);
 		}else {
-			entorno.dibujarImagen(shot2, x, y, this.angulo, 0.4);
+			entorno.dibujarImagen(shot2, x, y, this.angulo, 3);
 		}
 		
 	}

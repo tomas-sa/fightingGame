@@ -34,12 +34,14 @@ public class Juego extends InterfaceJuego {
 	Vida poder;
 	Vida vida2;
 	Vida stamina2;
+	Vida poder2;
 	boolean juegoNuevo;
 	int vidaJugador;
 	int staminaJugador;
 	int poderJugador;
 	int vidaNito;
 	int staminaNito;
+	int poderNito;
 	boolean estarEnSuelo;
 	boolean estarEnTecho;
 	boolean enemigoSubiendo;
@@ -83,9 +85,10 @@ public class Juego extends InterfaceJuego {
 		juegoNuevo = false;
 		vidaNito = 300;
 		vidaJugador = 300;
-		poderJugador = 300;
+		poderJugador = 50;
 		staminaJugador = 300;
 		staminaNito = 300;
+		poderNito = 50;
 		knight = new Knight(350, 350, entorno);
 		nito = new Nito(800, 420, entorno);
 		bar = new Bar(600,550, entorno, vidaNito);
@@ -118,6 +121,7 @@ public class Juego extends InterfaceJuego {
 		poder = new Vida(10, poderJugador, 100, 1, entorno);
 		vida2 = new Vida(20, vidaNito, 50, 2, entorno);
 		stamina2 = new Vida(10, staminaNito, 75,2 , entorno);
+		poder2 = new Vida(10, poderNito, 100, 2, entorno);
 		
 		if(juegoTerminado) {
 			
@@ -131,8 +135,9 @@ public class Juego extends InterfaceJuego {
 				vidaNito = 300;
 				vidaJugador = 300;
 				staminaJugador = 300;
-				poderJugador = 200;
+				poderJugador = 50;
 				staminaNito = 300;
+				poderNito = 50;
 				juegoTerminado = false;
 				
 				
@@ -216,7 +221,9 @@ public class Juego extends InterfaceJuego {
 					}else if(!entorno.estaPresionada(entorno.TECLA_ARRIBA)){
 						if(knight.y <= 350) {
 							if((knight.x > column.x - 60) && (knight.x < column.x +60)) {
-								
+								if(knight.y < 130) {
+									knight.bajarSalto();
+								}
 							}else {
 								estarEnSuelo = false;
 								knight.bajarSalto();
@@ -239,40 +246,15 @@ public class Juego extends InterfaceJuego {
 					}
 				}
 				
-				// disparar hechizo
 				
-				//if(entorno.sePresiono(entorno.TECLA_ESPACIO) && skill == null) {
-				//	skill = new Skill(this.knight.x, this.knight.y + 50, 0, entorno);
-				//}
-				//if(skill != null && skill.estarEnEntorno()) {
-				//	skill.dibujar(entorno, mirandoAdelante);
-				//	skill.movimiento(mirandoAdelante);
-				//}else {
-				///	skill = null;
-				///}
-				//colision
-				
-				//if(skill != null && (skill.x >= nito.x -50 && skill.x <= nito.x +50 )) {
-					
-				//	if((skill.y <= nito.y && skill.y >= nito.y - 50) || (skill.y >= nito.y && skill.y <= nito.y + 80)) {
-						
-				//		skill = null;
-				//		if(!(this.vidaNito <= 1)) {
-				//			this.vidaNito -= 30;
-				//			bar = null;
-				//		}
-				//	}
-					
-				//}
 				if(knight != null && nito != null) {
 					if(shot != null && (shot.x >= knight.x -100 && shot.x <= knight.x +100 )) {
 						
 						if((shot.y <= knight.y && shot.y >= knight.y - 50) || (shot.y >= knight.y && shot.y <= knight.y + 80)) {
 							
-							shot = null;
 							
 							if((!(this.vidaJugador <= 1) && !entorno.estaPresionada(entorno.TECLA_CTRL)) || staminaJugador < 50) {
-								this.vidaJugador -= 30;
+								this.vidaJugador -=5;
 								
 								if(poderJugador <= 300) {
 									//NO ENTIENDO PORQUE NO SUMA
@@ -312,23 +294,25 @@ public class Juego extends InterfaceJuego {
 					
 					
 					
-					//if(shot == null) {
-						//shot = new Shot(this.nito.x - 30, this.nito.y, entorno);
-					//}
-					//if(shot != null && shot.estarEnEntorno()) {
-					//	shot.dibujar(entorno, nitoAdelante);
-					//	shot.movimiento(nitoAdelante);
-					//}else {
-					//	shot = null;
-					//	if(nito.x > knight.x) {
-					//		nitoAdelante = true;
-					//	}else {
-					//		nitoAdelante = false;
-					//	}
-					//}
+					if(shot == null && poderNito > 200 && vidaNito < 200) {
+						double random = Math.random();
+						if(random > 0.98) {
+							shot = new Shot(1300, 350, entorno);
+						}
+					}
+					if(shot != null && shot.estarEnEntorno()) {
+						poderNito = 20;
+						shot.dibujar(entorno, nitoAdelante);
+						shot.movimiento(nitoAdelante);
+					}else {
+						shot = null;
+						if(nito.x > knight.x) {
+							nitoAdelante = true;
+						}else {
+							nitoAdelante = false;
+						}
+					}
 					
-					//nito.mover();
-					//nito.cambiarAngulo(knight.x, knight.y);
 					
 					if(knight.x > nito.x) {
 						nitoAdelante = false;
@@ -348,9 +332,6 @@ public class Juego extends InterfaceJuego {
 					
 					nito.cambiarAngulo(knight.x, knight.y);
 					
-					//if(knight.x >= nito.x -50 && knight.x <= nito.x +50 ) {
-					//	vidaJugador --;
-					//}
 					
 					if(nito.x >= knight.x -160 && nito.x <= knight.x +160 ) {
 						caminando = false;
@@ -372,6 +353,10 @@ public class Juego extends InterfaceJuego {
 									if(random > 0.8) {
 										jugadorGolpeado = true;
 										vidaJugador -=1;
+										if(poderNito <= 300) {
+											this.poderNito +=2;
+										}
+										
 										TimerTask taskGolpe = new TimerTask() {
 								            @Override
 								            public void run() {
@@ -382,24 +367,7 @@ public class Juego extends InterfaceJuego {
 									}
 									
 								}
-									//if(golpe) {
-									//	TimerTask taskGolpe = new TimerTask() {
-									//		int count = 0;
-									//           @Override
-									//           public void run() {
-									//        	   if(count < 5) {
-									//        		   vidaJugador -=20;
-									//        		   count ++;
-									//        	   }else {
-									//        		   timer.cancel();
-									//        		   golpe = true;
-									//        	   }
-									//            }
-									//        };
-									//        startTimer(timer, taskGolpe);
-									//        golpe = false;
-									//}
-								//}
+									
 								
 								
 							} else if(!(this.vidaJugador <= 1) && entorno.estaPresionada(entorno.TECLA_CTRL)) {
@@ -425,7 +393,9 @@ public class Juego extends InterfaceJuego {
 									//para lograr animacion de golpe enemigo
 									enemigoHit = true;
 									vidaNito -= 20;
-									this.poderJugador +=20;
+									if(poderJugador <= 280) {
+										this.poderJugador +=20;
+									}
 									TimerTask task = new TimerTask() {
 							            @Override
 							            public void run() {
@@ -451,7 +421,7 @@ public class Juego extends InterfaceJuego {
 						//REVISAR ESTE ELSE YA QUE PUEDE QUE ESTA LINEA SEA INNECESARIA
 						//linea que asegura que enemigo deje de cubrirse cuando jugador se aleja
 					}else {
-						if(fighting) {
+						if(fighting && !poderEjecutando) {
 							caminando = true;
 							nito.mover();
 							enemigoCubriendo = false;
@@ -475,6 +445,7 @@ public class Juego extends InterfaceJuego {
 					poder.dibujarse(entorno, 3);
 					vida2.dibujarse(entorno, 1);
 					stamina2.dibujarse(entorno, 2);
+					poder2.dibujarse(entorno, 3);
 				}
 				
 				
