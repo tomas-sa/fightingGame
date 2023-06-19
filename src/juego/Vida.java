@@ -29,8 +29,10 @@ public class Vida {
 	{
 		if(color == 1) {
 			entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, Color.red);
-		}else {
+		}else if(color == 2) {
 			entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, Color.green);
+		}else {
+			entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, Color.yellow);
 		}
 		
 		

@@ -21,6 +21,8 @@ public class Juego extends InterfaceJuego {
 	Image flame;
 	Image fondoFinal;
 	Image tituloGameOver;
+	Image prepareFight;
+	Image lightning;
 	Column column;
 	Bar bar;
 	Knight knight;
@@ -29,11 +31,13 @@ public class Juego extends InterfaceJuego {
 	Shot shot;
 	Vida vida;
 	Vida stamina;
+	Vida poder;
 	Vida vida2;
 	Vida stamina2;
 	boolean juegoNuevo;
 	int vidaJugador;
 	int staminaJugador;
+	int poderJugador;
 	int vidaNito;
 	int staminaNito;
 	boolean estarEnSuelo;
@@ -49,6 +53,9 @@ public class Juego extends InterfaceJuego {
 	boolean caminando;
 	boolean gameOver;
 	boolean juegoTerminado;
+	boolean fighting;
+	boolean jugadorGolpeado;
+	boolean poderEjecutando;
 	double gravedad = 15;
 	
 	Timer timer = new Timer();
@@ -70,14 +77,17 @@ public class Juego extends InterfaceJuego {
 		this.flame = Herramientas.cargarImagen("flame.gif");
 		this.fondoFinal = Herramientas.cargarImagen("fondoFinal.png");
 		this.tituloGameOver = Herramientas.cargarImagen("gameOver.png");
+		this.prepareFight = Herramientas.cargarImagen("fighting.gif");
+		this.lightning = Herramientas.cargarImagen("Lightning.gif");
 		this.nitoAtacando = false;
 		juegoNuevo = false;
 		vidaNito = 300;
 		vidaJugador = 300;
+		poderJugador = 300;
 		staminaJugador = 300;
 		staminaNito = 300;
-		knight = new Knight(100, 400, entorno);
-		nito = new Nito(600, 450, entorno);
+		knight = new Knight(350, 350, entorno);
+		nito = new Nito(800, 420, entorno);
 		bar = new Bar(600,550, entorno, vidaNito);
 		column = new Column(250, 420, entorno);
 		
@@ -105,20 +115,26 @@ public class Juego extends InterfaceJuego {
 		
 		vida = new Vida(20, vidaJugador, 50, 1, entorno);
 		stamina = new Vida(10, staminaJugador, 75, 1, entorno);
+		poder = new Vida(10, poderJugador, 100, 1, entorno);
 		vida2 = new Vida(20, vidaNito, 50, 2, entorno);
 		stamina2 = new Vida(10, staminaNito, 75,2 , entorno);
+		
 		if(juegoTerminado) {
+			
 			entorno.dibujarImagen(this.fondoFinal, 600, 300, 0, 1);
 			entorno.dibujarImagen(this.tituloGameOver, 600, 300, 0, 1);
+			
 			if(entorno.sePresiono(entorno.TECLA_ESPACIO)) {
-				knight = new Knight(100, 400, entorno);
-				nito = new Nito(600, 450, entorno);
+				knight = new Knight(350, 350, entorno);
+				nito = new Nito(800, 420, entorno);
 				column = new Column(250, 420, entorno);
 				vidaNito = 300;
 				vidaJugador = 300;
 				staminaJugador = 300;
+				poderJugador = 200;
 				staminaNito = 300;
 				juegoTerminado = false;
+				
 				
 			}
 		}else {
@@ -135,16 +151,30 @@ public class Juego extends InterfaceJuego {
 				entorno.dibujarImagen(this.graveyard, 600, 410, 0, 3.1);
 				entorno.dibujarImagen(this.seed, 600, 530, 0, 1);
 				//entorno.dibujarImagen(this.nitoTitulo, 600, 60, 0);
+				if(!fighting) {
+					entorno.dibujarImagen(this.prepareFight, 600, 250, 0, 1);
+				}
+				
+				
+				TimerTask taskFight = new TimerTask() {
+		            @Override
+		            public void run() {
+		                fighting = true;
+		            }
+		        };
+		        timer.schedule(taskFight, 1200);
 				
 				if(vidaNito <= 0 || vidaJugador <= 0) {
 					juegoTerminado = true;
+					juegoNuevo = false;
+					fighting = false;
 					knight = null;
 					nito = null;
 				}
 				
 				//movimiento de caballero
 				
-				if(knight != null) {
+				if(knight != null && fighting && !jugadorGolpeado) {
 					
 					if (entorno.estaPresionada(entorno.TECLA_DERECHA)) {
 						if(skill == null) {
@@ -171,7 +201,7 @@ public class Juego extends InterfaceJuego {
 					
 					if(entorno.estaPresionada(entorno.TECLA_ARRIBA) && estarEnSuelo == true && estarEnTecho == false) {
 						
-						if(knight.y <= 100) {
+						if(knight.y <= 120) {
 							estarEnTecho = true;
 							estarEnSuelo = false;
 							
@@ -179,12 +209,12 @@ public class Juego extends InterfaceJuego {
 							gravedad -= 0.3;
 							knight.saltar(gravedad);
 						}
-						if(knight.y >= 400) {
+						if(knight.y >= 350) {
 							gravedad = 12;
 						}
 						
 					}else if(!entorno.estaPresionada(entorno.TECLA_ARRIBA)){
-						if(knight.y <= 400) {
+						if(knight.y <= 350) {
 							if((knight.x > column.x - 60) && (knight.x < column.x +60)) {
 								
 							}else {
@@ -199,7 +229,7 @@ public class Juego extends InterfaceJuego {
 							gravedad = 15;
 						}
 						
-					}else if(entorno.estaPresionada(entorno.TECLA_ARRIBA) && estarEnSuelo == false && knight.y < 400){
+					}else if(entorno.estaPresionada(entorno.TECLA_ARRIBA) && estarEnSuelo == false && knight.y < 350){
 						if((knight.x > column.x - 60) && (knight.x < column.x +60)) {
 							
 						}else {
@@ -244,11 +274,38 @@ public class Juego extends InterfaceJuego {
 							if((!(this.vidaJugador <= 1) && !entorno.estaPresionada(entorno.TECLA_CTRL)) || staminaJugador < 50) {
 								this.vidaJugador -= 30;
 								
+								if(poderJugador <= 300) {
+									//NO ENTIENDO PORQUE NO SUMA
+									this.poderJugador ++;
+								}
 							} else if(!(this.vidaJugador <= 1) && entorno.estaPresionada(entorno.TECLA_CTRL)) {
 								this.staminaJugador -= 40;
 							}
 						}
 						
+					}
+					//PODER FINAL
+					if(poderJugador >= 200) {
+						if(entorno.estaPresionada(entorno.TECLA_SHIFT)) {
+							
+							vidaNito -= 100;
+							poderJugador = 20;
+							poderEjecutando = true;
+							enemigoHit = true;
+							
+							
+						}
+					}
+					if(poderEjecutando) {
+						entorno.dibujarImagen(lightning, nito.x, (nito.y -150), 0, 3.5);
+						TimerTask taskPoder = new TimerTask() {
+				            @Override
+				            public void run() {
+				                poderEjecutando = false;
+				                enemigoHit = false;
+				            }
+				        };
+				        timer.schedule(taskPoder, 1000);
 					}
 					
 					// disparos de Nito
@@ -311,8 +368,18 @@ public class Juego extends InterfaceJuego {
 							
 							if((!(this.vidaJugador <= 0) && !entorno.estaPresionada(entorno.TECLA_CTRL)) || staminaJugador < 50) {
 								if(!enemigoCubriendo && !enemigoHit) {
-									
-									vidaJugador -=1;
+									double random = Math.random();
+									if(random > 0.8) {
+										jugadorGolpeado = true;
+										vidaJugador -=1;
+										TimerTask taskGolpe = new TimerTask() {
+								            @Override
+								            public void run() {
+								                jugadorGolpeado = false;
+								            }
+								        };
+								        timer.schedule(taskGolpe, 1300);
+									}
 									
 								}
 									//if(golpe) {
@@ -341,7 +408,7 @@ public class Juego extends InterfaceJuego {
 							
 							//defendiendo de ataques de jugador
 							
-							if(entorno.sePresiono(entorno.TECLA_ESPACIO)) {
+							if(entorno.sePresiono(entorno.TECLA_ESPACIO) && !jugadorGolpeado) {
 								double random = Math.random();
 								
 								if(random > 0.70) {
@@ -358,6 +425,7 @@ public class Juego extends InterfaceJuego {
 									//para lograr animacion de golpe enemigo
 									enemigoHit = true;
 									vidaNito -= 20;
+									this.poderJugador +=20;
 									TimerTask task = new TimerTask() {
 							            @Override
 							            public void run() {
@@ -383,24 +451,28 @@ public class Juego extends InterfaceJuego {
 						//REVISAR ESTE ELSE YA QUE PUEDE QUE ESTA LINEA SEA INNECESARIA
 						//linea que asegura que enemigo deje de cubrirse cuando jugador se aleja
 					}else {
-						caminando = true;
-						nito.mover();
-						enemigoCubriendo = false;
-						if(staminaNito < 300) {
-							staminaNito +=1;
+						if(fighting) {
+							caminando = true;
+							nito.mover();
+							enemigoCubriendo = false;
+							if(staminaNito < 300) {
+								staminaNito +=1;
+							}
 						}
+						
 					}
 					
 					
 					
 					//INICIANDO OBJETOS
 					
-					knight.dibujar(entorno, mirandoAdelante);
+					knight.dibujar(entorno, mirandoAdelante, fighting, jugadorGolpeado);
 					nito.dibujar(entorno, nitoAdelante, nitoAtacando, enemigoCubriendo, enemigoHit, caminando);
 					//bar.dibujar(entorno);
 					column.dibujar(entorno);
 					vida.dibujarse(entorno, 1);
 					stamina.dibujarse(entorno, 2);
+					poder.dibujarse(entorno, 3);
 					vida2.dibujarse(entorno, 1);
 					stamina2.dibujarse(entorno, 2);
 				}

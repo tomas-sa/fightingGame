@@ -41,35 +41,35 @@ public class Nito {
 	public void dibujar(Entorno entorno, boolean direccion, boolean atacando, boolean cubriendo, boolean hit, boolean caminando) {
 		if(cubriendo) {
 			if(direccion) {
-				entorno.dibujarImagen(nitoShield, x, (y +20), 0, 2.5);
+				entorno.dibujarImagen(nitoShield, x, (y +20), 0, 3.5);
 			}else {
-				entorno.dibujarImagen(nitoShield2, x, (y +20), 0, 2.5);
+				entorno.dibujarImagen(nitoShield2, x, (y +20), 0, 3.5);
 			}
 		}else if(hit) {
 			if(direccion) {
-				entorno.dibujarImagen(nitoHit, x, y, 0, 2.5);
+				entorno.dibujarImagen(nitoHit, x, y, 0, 3.5);
 			}else{
-				entorno.dibujarImagen(nitoHit2, x, y, 0, 2.5);
+				entorno.dibujarImagen(nitoHit2, x, y, 0, 3.5);
 			}
 			
 		}else if(atacando) {
 			if(direccion) {
-				entorno.dibujarImagen(nitoAtacando, x, y, 0, 2.5);
+				entorno.dibujarImagen(nitoAtacando, x, y, 0, 3.5);
 			}else {
-				entorno.dibujarImagen(nitoAtacando2, x, y, 0, 2.5);
+				entorno.dibujarImagen(nitoAtacando2, x, y, 0, 3.5);
 			}
 			
 		}else if(caminando) {
 			if(direccion) {
-				entorno.dibujarImagen(nitoCaminando, x, y, 0, 2.5);
+				entorno.dibujarImagen(nitoCaminando, x, y, 0, 3.5);
 			}else {
-				entorno.dibujarImagen(nitoCaminando2, x, y, 0, 2.5);
+				entorno.dibujarImagen(nitoCaminando2, x, y, 0, 3.5);
 			}
 		}else {
 			if(direccion) {
-				entorno.dibujarImagen(nito, x, y, 0, 2.5);
+				entorno.dibujarImagen(nito, x, y, 0, 3.5);
 			}else {
-				entorno.dibujarImagen(nito2, x, y, 0, 2.5);
+				entorno.dibujarImagen(nito2, x, y, 0, 3.5);
 			}
 		}
 	}

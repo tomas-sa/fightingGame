@@ -19,6 +19,8 @@ public class Knight {
 	Image knightRun2;
 	Image knightAttack2;
 	Image knightJump2;
+	Image knightHit;
+	Image knightHit2;
 	Image cover;
 	Entorno e;
 	Timer temporizadorSalto;
@@ -37,63 +39,75 @@ public class Knight {
 		this.knightRun2 = Herramientas.cargarImagen("knightCorriendo2.gif");
 		this.knightAttack2 = Herramientas.cargarImagen("knightAttack2.gif");
 		this.knightJump2 = Herramientas.cargarImagen("knightJump2.gif");
+		this.knightHit = Herramientas.cargarImagen("hit.gif");
+		this.knightHit2 = Herramientas.cargarImagen("hit2.gif");
 		this.cover = Herramientas.cargarImagen("cover.gif");
 		this.e = e;
 		temporizadorSalto = new Timer();
         saltando = false;
 	}
 	
-	public void dibujar(Entorno entorno, boolean direccion) {
-		
-		if ((entorno.estaPresionada(entorno.TECLA_IZQUIERDA) || entorno.estaPresionada(entorno.TECLA_DERECHA)) && !entorno.estaPresionada(entorno.TECLA_ARRIBA)) {
-			if(direccion) {
-				entorno.dibujarImagen(knightRun, x, y, this.angulo, 3);
-			}else {
-				entorno.dibujarImagen(knightRun2, x, y, this.angulo, 3);
-			}
-			
-		}else if(entorno.estaPresionada(entorno.TECLA_CTRL)){
-			
-			entorno.dibujarImagen(cover, x, y, this.angulo, 3);
-			
-		}else if(entorno.sePresiono(entorno.TECLA_ESPACIO)){
-			
-			atacando = true;
-			
-			
-			TimerTask task = new TimerTask() {
-	            @Override
-	            public void run() {
-	            	atacando = false;
-	            }
-	        };
-	        timer.schedule(task, 300);
-			
-		}else if(entorno.estaPresionada(entorno.TECLA_ARRIBA)) {
-			if(direccion) {
-				entorno.dibujarImagen(knightJump, x, y, angulo, 3);
-			}else {
-				entorno.dibujarImagen(knightJump2, x, y, angulo, 3);
-			}
-			
-		}else {
-			if(atacando) {
+	public void dibujar(Entorno entorno, boolean direccion, boolean fighting, boolean golpeado) {
+		if(fighting && !golpeado) {
+			if ((entorno.estaPresionada(entorno.TECLA_IZQUIERDA) || entorno.estaPresionada(entorno.TECLA_DERECHA)) && !entorno.estaPresionada(entorno.TECLA_ARRIBA)) {
 				if(direccion) {
-					entorno.dibujarImagen(knightAttack, x, y, angulo, 3);
+					entorno.dibujarImagen(knightRun, x, y, this.angulo, 4);
 				}else {
-					entorno.dibujarImagen(knightAttack2, x, y, angulo, 3);
+					entorno.dibujarImagen(knightRun2, x, y, this.angulo, 4);
 				}
-			}else {
+				
+			}else if(entorno.estaPresionada(entorno.TECLA_CTRL)){
+				
+				entorno.dibujarImagen(cover, x, y, this.angulo, 4);
+				
+			}else if(entorno.sePresiono(entorno.TECLA_ESPACIO)){
+				
+				atacando = true;
+				
+				
+				TimerTask task = new TimerTask() {
+		            @Override
+		            public void run() {
+		            	atacando = false;
+		            }
+		        };
+		        timer.schedule(task, 300);
+				
+			}else if(entorno.estaPresionada(entorno.TECLA_ARRIBA)) {
 				if(direccion) {
-					entorno.dibujarImagen(knight, x, y, this.angulo, 3);
+					entorno.dibujarImagen(knightJump, x, y, angulo, 4);
 				}else {
-					entorno.dibujarImagen(knight2, x, y, this.angulo, 3);
+					entorno.dibujarImagen(knightJump2, x, y, angulo, 4);
 				}
+				
+			}else {
+				if(atacando) {
+					if(direccion) {
+						entorno.dibujarImagen(knightAttack, x, y, angulo, 4);
+					}else {
+						entorno.dibujarImagen(knightAttack2, x, y, angulo, 4);
+					}
+				}else {
+					if(direccion) {
+						entorno.dibujarImagen(knight, x, y, this.angulo, 4);
+					}else {
+						entorno.dibujarImagen(knight2, x, y, this.angulo, 4);
+					}
+				}
+				
+				
 			}
-			
+		}else if(golpeado) {
+			if(direccion) {
+				entorno.dibujarImagen(knightHit, x, y, this.angulo, 4);
+			}else {
+				entorno.dibujarImagen(knightHit2, x, y, this.angulo, 4);
+			}
 			
 		}
-		
+		else {
+			entorno.dibujarImagen(knight, x, y, this.angulo, 4);
+		}
 	}
 	
 	public void moverAdelante() {
