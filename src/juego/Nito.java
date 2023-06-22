@@ -19,6 +19,8 @@ public class Nito {
 	Image nitoHit2;
 	Image nitoCaminando;
 	Image nitoCaminando2;
+	Image nitoDeath;
+	Image nitoDeath2;
 	Entorno e;
 	
 	public Nito(double x, double y, Entorno e) {
@@ -35,11 +37,20 @@ public class Nito {
 		this.nitoHit2 = Herramientas.cargarImagen("demonHit2.gif");
 		this.nitoCaminando = Herramientas.cargarImagen("demon-walk.gif");
 		this.nitoCaminando2 = Herramientas.cargarImagen("demon-walk2.gif");
+		this.nitoDeath = Herramientas.cargarImagen("deathEnemy.gif");
+		this.nitoDeath2 = Herramientas.cargarImagen("deathEnemy2.gif");
 		this.e = e;
 	}
 	
-	public void dibujar(Entorno entorno, boolean direccion, boolean atacando, boolean cubriendo, boolean hit, boolean caminando) {
-		if(cubriendo) {
+	public void dibujar(Entorno entorno, boolean direccion, boolean atacando, boolean cubriendo, boolean hit, boolean caminando, boolean death) {
+		if(death) {
+			if(direccion) {
+				entorno.dibujarImagen(nitoDeath, x, (y +20), 0, 3.5);
+			}else {
+				entorno.dibujarImagen(nitoDeath2, x, (y +20), 0, 3.5);
+			}
+			
+		}else if(cubriendo) {
 			if(direccion) {
 				entorno.dibujarImagen(nitoShield, x, (y +20), 0, 3.5);
 			}else {

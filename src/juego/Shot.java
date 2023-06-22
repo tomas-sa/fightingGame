@@ -24,8 +24,6 @@ public class Shot {
 	public void dibujar(Entorno entorno, boolean direccion) {
 		if(direccion) {
 			entorno.dibujarImagen(shot, x, y, this.angulo, 3);
-		}else {
-			entorno.dibujarImagen(shot2, x, y, this.angulo, 3);
 		}
 		
 	}
