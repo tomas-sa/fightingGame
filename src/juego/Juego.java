@@ -127,8 +127,8 @@ public class Juego extends InterfaceJuego {
 		this.nitoAtacando = false;
 		juegoNuevo = false;
 		controles = false;
-		vidaNito = 30;
-		vidaJugador = 30;
+		vidaNito = 300;
+		vidaJugador = 300;
 		poderJugador = 50;
 		staminaJugador = 300;
 		staminaNito = 300;
@@ -441,8 +441,8 @@ public class Juego extends InterfaceJuego {
 					}
 					if(shot != null && shot.estarEnEntorno()) {
 						poderNito = 20;
-						shot.dibujar(entorno, nitoAdelante);
-						shot.movimiento(nitoAdelante);
+						shot.dibujar(entorno);
+						shot.movimiento();
 					}else {
 						shot = null;
 						if(nito.x > knight.x) {

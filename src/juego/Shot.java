@@ -10,21 +10,18 @@ public class Shot {
 	double y;
 	double angulo;
 	Entorno e;
-	Image shot;
-	Image shot2;
+	Image horse;
+
 	
 	public Shot(double x, double y, Entorno e) {
 		this.x = x;
 		this.y = y;
-		this.shot = Herramientas.cargarImagen("horse.gif");
-		this.shot2 = Herramientas.cargarImagen("shot2.png");
+		this.horse = Herramientas.cargarImagen("horse.gif");
 		this.e = e;
 	}
 	
-	public void dibujar(Entorno entorno, boolean direccion) {
-		if(direccion) {
-			entorno.dibujarImagen(shot, x, y, this.angulo, 3);
-		}
+	public void dibujar(Entorno entorno) {
+			entorno.dibujarImagen(horse, x, y, this.angulo, 3);
 		
 	}
 	public boolean estarEnEntorno() {
@@ -34,13 +31,9 @@ public class Shot {
 		return false;
 	}
 	
-	public void movimiento(boolean direccion) {
-		if(direccion) {
+	public void movimiento() {
 			this.x -= 15;
-		}else {
-			this.x += 15;
-		}
-		
+
 	}
 	
 }
